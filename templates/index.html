@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data Graph Generator</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Stock Data Graph Generator</h1>
+
+    <form id="stockForm">
+        <label for="symbol">Stock Symbol:</label>
+        <input type="text" id="symbol" name="symbol" required><br><br>
+
+        <label for="start_date">Start Date:</label>
+        <input type="date" id="start_date" name="start_date" required><br><br>
+
+        <label for="end_date">End Date:</label>
+        <input type="date" id="end_date" name="end_date" required><br><br>
+
+        <label for="chart_type">Chart Type:</label>
+        <select id="chart_type" name="chart_type">
+            <option value="line">Line</option>
+            <option value="bar">Bar</option>
+        </select><br><br>
+
+        <button type="button" id="generateGraph">Generate Graph</button>
+    </form>
+
+    <div id="graphContainer" style="margin-top: 20px;">
+        
+    </div>
+
+    <script>
+        
+        $('#generateGraph').click(function() {
+            
+            const symbol = $('#symbol').val();
+            const startDate = $('#start_date').val();
+            const endDate = $('#end_date').val();
+            const chartType = $('#chart_type').val();
+
+            
+            $.ajax({
+                url: '/generate_graph',  
+                type: 'POST',
+                data: {
+                    symbol: symbol,
+                    start_date: startDate,
+                    end_date: endDate,
+                    chart_type: chartType
+                },
+                success: function(response) {
+                    
+                    $('#graphContainer').html('<img src="data:image/png;base64,' + response.image_data + '" alt="Stock Chart">');
+                },
+                error: function(error) {
+                    
+                    alert('Error generating graph: ' + error.responseText);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
